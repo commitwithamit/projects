@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!-- css file (from sass) -->
+    <link rel="stylesheet" href="style.css">
+    <title>TODO List</title>
+</head>
+
+<body>
+    <h1>To Do List</h1>
+    <div class="todo-container">
+        <div class="input-con">
+            <input type="text" id="inp-box" placeholder="Task Name">
+            <button onclick="addTask()">Add</button>
+        </div>
+        <div class="error-msg">
+            *Task name can not be empty.
+        </div>
+        <div class="list-con">
+            <ul id="ul-list">
+
+<!-- teach hide show password field -->
+
+                <!--
+                 <li>
+                     <span>
+                        <i class="bi bi-circle" onclick="taskStatus()"></i>
+                        <span>Bathing soap</span>
+                        <i class="bi bi-pencil-square" onclick="editMe(event)"></i>
+                        <i class="bi bi-trash3" onclick="removeMe(event)"></i>
+                    </span>
+                    <div class="edit-con">
+                        <input type="text" id="edit-box">
+                        <button onclick="cancelEdit()">Cancel</button>
+                        <button onclick="saveEdit()">Save</button>
+                    </div>
+                </li>
+                 <li>
+                    <span>
+                        <i class="bi bi-check2-circle"></i>
+                        <span>Toothpaste</span>
+                        <input type="text">
+                    </span>
+                    <i class="bi bi-pencil-square"></i>
+                    <i class="bi bi-trash3"></i>
+                </li>
+            -->
+
+            </ul>
+        </div>
+    </div>
+
+
+    <script>
+
+        // note: for later add transition on the .todo-container when task is removed
+
+
+        // function to add tasks
+        function addTask() {
+            // getting user input value and converting it into text node
+            let user_inp = document.createTextNode(document.querySelector("#inp-box").value);
+            let ul = document.querySelector("#ul-list");
+            if (document.querySelector("#inp-box").value != "") {
+                // removing error message as field is now not empty (if it was empty before)
+                document.querySelector(".error-msg").style.display = "none";
+
+                // creating task list's element
+                let li = document.createElement("li");
+                let parentSpan = document.createElement("span");
+                let childSpan = document.createElement("span");
+                let check = document.createElement("i");
+                let edit = document.createElement("i");
+                let remove = document.createElement("i");
+
+                // adding neccessary classes
+                check.classList.add("bi", "bi-circle");
+                edit.classList.add("bi-pencil-square");
+                remove.classList.add("bi", "bi-trash3");
+
+                // adding neccessary attribute for later use
+                check.setAttribute("onclick", "taskStatus(this)");
+                edit.setAttribute("onclick", "editMe(event)");
+                remove.setAttribute("onclick", "removeMe(event)");
+
+                // creating html structure of tags 
+                ul.appendChild(li);
+                li.appendChild(parentSpan)
+                parentSpan.appendChild(check);
+                parentSpan.appendChild(childSpan);
+                parentSpan.appendChild(edit);
+                parentSpan.appendChild(remove);
+
+                // assigning user input task/value to inner span tag
+                childSpan.appendChild(user_inp);
+
+                // clearing the input as item has been added to the list
+                document.querySelector("#inp-box").value = "";
+
+            } else {
+                document.querySelector(".error-msg").style.display = "block";
+            }
+        }
+
+        // function for changing task's status whether completed or not
+        function taskStatus(element) {
+            element.classList.toggle("bi-circle");
+            element.classList.toggle("bi-check2-circle");
+        }
+
+        // function for deleting task
+        function removeMe(e) {
+            e.target.parentElement.parentElement.classList.add("remove-item");
+            setInterval(() => {
+                e.target.parentElement.parentElement.remove();
+            }, 200);
+        }
+
+        // function for editing task
+        function editMe(e) {
+            // vissiblity hidden of task which is being edited
+            e.target.parentElement.classList.toggle("disappear");
+
+            let editThis = e.target.previousSibling;
+            let currentLi = e.target.parentElement.parentElement;
+
+            // creating edit box
+            let div = document.createElement("div");
+            let input = document.createElement("input");
+            let cancelBtn = document.createElement("button");
+            let saveBtn = document.createElement("button");
+
+            // setting text inside buttons
+            cancelBtn.innerText = "Cancel";
+            saveBtn.innerText = "Save";
+
+            // creating html structure of tags 
+            currentLi.appendChild(div);
+            div.appendChild(input);
+            div.appendChild(cancelBtn);
+            div.appendChild(saveBtn);
+
+            // adding neccessary classes/id
+            div.classList.add("edit-con");
+            input.setAttribute("id", "edit-box");
+            cancelBtn.setAttribute("onclick", "cancelEdit(event)");
+            saveBtn.setAttribute("onclick", "saveEdit(event)");
+
+            input.value = editThis.innerHTML;
+            input.focus();
+            // console.log(editThis.innerHTML);
+        }
+
+        // saving the edit
+        function saveEdit(e) {
+            // first we get the value which has been edited
+            let editedValue = e.target.previousSibling.previousSibling.value;
+
+            // now we select the element where we have to show this edited value and assign it
+            let showHere = e.target.parentElement.previousSibling.children[1];
+
+            showHere.innerHTML = editedValue;
+
+            // vissiblity hidden of edit box and making task vissible
+            e.target.parentElement.classList.toggle("disappear");
+            e.target.parentElement.previousSibling.classList.toggle("disappear");
+            
+            // removing edit container from DOM
+            setInterval(() => {
+                e.target.parentElement.remove();
+            }, 500);
+        }
+
+        // canceling the edit
+        function cancelEdit(e) {
+            // vissiblity hidden of task which is being edited
+            e.target.parentElement.classList.toggle("disappear");
+            e.target.parentElement.previousSibling.classList.toggle("disappear");
+
+            // removing edit container from DOM
+            setInterval(() => {
+                e.target.parentElement.remove();
+            }, 500);
+        }
+    </script>
+</body>
+</html>
