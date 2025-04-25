@@ -9,22 +9,27 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Kode+Mono:wght@400..700&display=swap" rel="stylesheet">
     <style>
-        :root{
+        :root {
             --green: #b1e9cf;
             --cream: #f2ebdc;
             --dark: #2e2f28;
-            --l-green:#e2ead8;
+            --l-green: #e2ead8;
+            --result: #1bb26c;
+            --cut: #ff0000;
         }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: "Kode Mono", monospace;
         }
-        *:focus{
+
+        *:focus {
             outline: none;
         }
-        body{
+
+        body {
             display: flex;
             justify-content: center;
             align-items: center;
@@ -34,99 +39,712 @@
             background-position: center left;
             background-size: cover;
         }
-        .box-style{
+
+        .box-style {
             border: 3px solid var(--dark);
             border-radius: 10px;
             box-shadow: 4px 4px 0 0 var(--dark);
-        }
-        form{
             height: max-content;
             width: min-content;
             overflow: hidden;
         }
-        .result-box{
+
+        .result-box {
             background: var(--cream);
             padding: 10px 15px;
+            height: 106px;
         }
-        .result-box input{
+
+        .result-box textarea {
             width: 100%;
-            padding: 1.5rem 0;
+            min-width: 212px;
+            height: 100%;
             background: transparent;
             outline: none;
             border: none;
             font-size: 2rem;
             font-weight: 600;
-            /* direction: rtl; */
+            padding-right: 6px;
             text-align: right;
+            resize: none;
+            overflow-x: auto;
+            /* white-space: nowrap; */
         }
-        .btns-box{
-            padding: 15px 15px 0 15px;
+
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        /* Track */
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        /* Handle */
+        ::-webkit-scrollbar-thumb {
+            /* background: var(--green); */
+            background: #ffd8ab;
+;
+            border-radius: 50px;
+        }
+
+        /* Handle on hover */
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--green);
+        }
+
+        .btns-box {
+            padding: 15px;
             display: grid;
             grid-template-columns: max-content max-content max-content max-content;
             grid-template-rows: max-content max-content max-content max-content max-content;
             gap: 15px;
+            justify-content: center;
             background: var(--green);
+            position: relative;
         }
-        .btns-box input:nth-child(1){
-            grid-area:1/1/2/3;
-            width: 100%;
-        }
-        .btns-box img{
-            grid-area:1/3/2/5;
-            width: 100%;
+
+        .btns-box img {
+            /* grid-area: 1/3/2/5; */
+            /* width: 100%; */
             object-fit: contain;
             background: var(--cream);
         }
-        .btns-box input:nth-child(15){
-            grid-area:5/1/7/3;
+
+        /* .btns-box input:nth-child(15) {
+            grid-area: 5/1/7/3;
             width: 100%;
-        }
-        .btn-sm{
+        } */
+
+        .btn-sm {
             width: 40px;
             height: 40px;
             font-size: 1rem;
             box-shadow: 2px 2px 0 0 var(--dark);
             background: var(--cream);
             cursor: pointer;
+            transition: all .3s ease-in-out;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
-        .font-h{
+
+        .delete>img {
+            width: 25px;
+        }
+
+        .font-h {
             font-size: 1.35rem;
         }
+
+        .error {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+            transition: all .3s ease;
+            display: none;
+        }
+
+        .error::before {
+            content: "";
+            position: absolute;
+            background-color: black;
+            opacity: .7;
+            width: inherit;
+            height: inherit;
+        }
+
+        .error-box {
+            background-color: var(--cream);
+            padding: 2.5rem 2.3rem 2rem;
+            border-radius: 10px;
+            box-shadow: 4px 4px 0 0 var(--dark);
+            position: relative;
+            z-index: 2;
+            width: 300px;
+            max-width: 50%;
+            color: rgb(198, 0, 0);
+        }
+
+        .close {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.6rem;
+            width: 25px;
+            height: 25px;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            color: #000;
+        }
+
+        .close span {
+            transform: rotate(45deg);
+        }
+
+        .multiply {
+            font-family: sans-serif;
+            font-size: 15px;
+        }
+
+        .divide {
+            font-size: 22px;
+        }
+
+        .lg-txt {
+            font-size: 2rem;
+            color: var(--result);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .clear {
+            color: var(--cut);
+        }
+
+        @media (max-width:576px) {
+            .error-box {
+                max-width: 70%;
+                padding: 2.5rem 1rem 2rem;
+            }
+        }
+
+        .pressed {
+            background: #ffd8ab;
+        }
+
+        .history{
+            position: relative;
+            overflow: inherit;  
+        }
+        .history>img {
+            width: 18px;
+            z-index: 2;
+        }
+        .history::before{
+            content: "";
+            width: 20px;
+            height: 20px;
+            background: var(--cream);
+            position: absolute;
+            bottom: -25px;
+            transform: rotate(45deg);
+        }
+        .history-box {
+            width: calc(100% - 25px);
+            height: calc(100% - 75px);
+            background: var(--cream);
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 5px;
+            padding: 10px;
+            text-align: right;
+            overflow: auto;
+            box-shadow: 4px 4px 0 0 var(--dark);
+        }
+        .history-box > div{
+            margin-bottom: 12px;
+        }
+        .history-box > div:last-child{
+            margin-bottom: 0;
+        }
+        .equ-ans{
+            color: var(--result);
+            font-weight: 900;
+        }
+        
     </style>
 </head>
-<body>
 
-    <form name="form" class="box-style">
+<body>
+    <div class="box-style">
         <div class="result-box">
-            <input type="text" name="result" placeholder="0">
+            <textarea id="display" row="1" readonly placeholder="0"></textarea>
         </div>
         <div class="btns-box">
-            <input type="button" value="Clear" class="box-style btn-sm" onclick="form.result.value = ''">
-            <img src="../img/delete.png" class="box-style btn-sm" onclick="form.result.value = form.result.value.slice(0, -1)">
+            <button data-value="clear" class="box-style btn-sm clear">C</button>
+            <button id="parenthesis" class="box-style btn-sm">()</button>
+            <button class="box-style btn-sm history">
+                <img src="../img/history.png">
+            </button>
+            <button class="box-style btn-sm delete">
+                <img src="../img/delete.png">
+            </button>
 
-            <input type="button" value="1" class="box-style btn-sm" onclick="form.result.value += '1'">
-            <input type="button" value="2" class="box-style btn-sm" onclick="form.result.value += '2'">
-            <input type="button" value="3" class="box-style btn-sm" onclick="form.result.value += '3'">
-            
-            <input type="button" value="+" class="box-style btn-sm font-h"  onclick="form.result.value += '+'">
-            
-            <input type="button" value="4" class="box-style btn-sm" onclick="form.result.value += '4'">
-            <input type="button" value="5" class="box-style btn-sm" onclick="form.result.value += '5'">
-            <input type="button" value="6" class="box-style btn-sm" onclick="form.result.value += '6'">
-            
-            <input type="button" value="-" class="box-style btn-sm font-h" onclick="form.result.value += '-'">
-            
-            <input type="button" value="7" class="box-style btn-sm" onclick="form.result.value += '7'">
-            <input type="button" value="8" class="box-style btn-sm" onclick="form.result.value += '8'">
-            <input type="button" value="9" class="box-style btn-sm" onclick="form.result.value += '9'">
+            <button data-value="+" class="box-style btn-sm font-h operator">+</button>
 
-            <input type="button" value="*" class="box-style btn-sm font-h" onclick="form.result.value += '*'">
+            <button data-value="1" class="box-style btn-sm">1</button>
+            <button data-value="2" class="box-style btn-sm">2</button>
+            <button data-value="3" class="box-style btn-sm">3</button>
 
-            <input type="button" value="Result" class="box-style btn-sm" onclick="form.result.value = eval(form.result.value)">
-            <input type="button" value="0" class="box-style btn-sm" onclick="form.result.value += '0'">
-            <input type="button" value="/" class="box-style btn-sm" onclick="form.result.value += '/'">
+            <button data-value="-" class="box-style btn-sm font-h operator">-</button>
+
+            <button data-value="4" class="box-style btn-sm">4</button>
+            <button data-value="5" class="box-style btn-sm">5</button>
+            <button data-value="6" class="box-style btn-sm">6</button>
+
+            <!-- x multiply -->
+            <button data-value="*" class="box-style btn-sm font-h multiply operator">x</button>
+
+            <button data-value="7" class="box-style btn-sm">7</button>
+            <button data-value="8" class="box-style btn-sm">8</button>
+            <button data-value="9" class="box-style btn-sm">9</button>
+
+            <button data-value="÷" class="box-style btn-sm divide operator">÷</button>
+
+            <button data-value="0" class="box-style btn-sm">0</button>
+            <button data-value="." class="box-style btn-sm">.</button>
+            <button data-value="result" class="box-style btn-sm lg-txt result">=</button>
+
+            <div class="history-box">
+                <!-- <div>
+                    <p class="equ">234+789-849*(23+9)</p>
+                    <p class="equ-ans">=345</p>
+                </div> -->
+            </div>
         </div>
-    </form>
+    </div>
 
+    <div class="error">
+        <div class="error-box">
+            <div class="close btn-sm box-style"><span>+</span></div>
+            <div class="message"></div>
+        </div>
+    </div>
+
+    <script>
+        /*********** when result is longer then15 digits use e+ **************/ 
+
+        const input = document.getElementById("display");
+        const btnCon = document.querySelector(".btns-box");
+        const clearBtn = document.querySelector(".clear");
+        const resultBtn = document.querySelector(".result");
+        const deleteBtn = document.querySelector(".delete");
+        const ptheBtn = document.querySelector("#parenthesis");
+        let openParenthesis = 0;
+
+        // parenthesis functionality 
+        ptheBtn.addEventListener("click", () => {
+            const value = input.value;
+            const lastChar = value.slice(-1);
+
+            // Count open and close parentheses to determine balance
+            const openCount = (value.match(/\(/g) || []).length;
+            const closeCount = (value.match(/\)/g) || []).length;
+            // Close parentheses if open > close
+            if (openCount > closeCount && /[0-9.)]/.test(lastChar)) {
+                input.value += ")";
+            }
+            // after number, decimal or closing parenthesis → insert multiplication and open
+            else if (/^\d+(\.)?$/.test(value) || /^\d+(\.\d+)?$/.test(value) || /[0-9).]/.test(lastChar)) {
+                input.value += "*(";
+            }
+            // If empty or after operator → insert open parenthesis
+            else if (
+                value === "" ||
+                openCount === closeCount ||
+                lastChar === "(" ||
+                /[+\-*/(]/.test(lastChar)
+            ) {
+                input.value += "(";
+            }
+        });
+
+        // calculator's buttons click event
+        btnCon.addEventListener("click", function (e) {
+            let currentVal = e.target.dataset.value;
+            adjustFontSize(); // inc/dec font-size if text is longer
+            setTimeout(() => {
+                input.scrollTop = input.scrollHeight - 1; // to make the user see new values on the new line
+            }, 0);
+
+            if (
+                currentVal !== undefined &&
+                currentVal !== null &&
+                currentVal != "" &&
+                currentVal != "clear" &&
+                currentVal != "result"
+            ) {
+                let prevVal = input.value;
+                let newVal = prevVal + currentVal;
+
+                const lastNumber = newVal.split(/[\+\-\*\/\(\)]/).pop(); // Get the most recent number
+                const digitCount = lastNumber.replace(/[^0-9]/g, "");
+
+                if (digitCount.length > 15) {
+                    showError(`<b>Invalid input:</b><br>Can't enter more than 15 digits`);
+                    return;
+                }
+                /*
+                    preventing (1)2 this we convert it to (1)*2
+                    if last char is number then replace it with *num 
+                    if last char is . then replace it with *0. 
+                */
+                if (/\d/.test(newVal[newVal.length - 1]) || /\./.test(newVal[newVal.length - 1])) {
+                    let lastVal = newVal[newVal.length - 1];
+                    let last2nd = newVal[newVal.length - 2];
+                    if (last2nd === ")" && /\d/.test(lastVal)) {
+                        let newString = newVal.slice(0, -1);
+                        newVal = `${newString}*${lastVal}`;
+                    }
+                    if (last2nd === ")" && /\./.test(lastVal)) {
+                        let newString = newVal.slice(0, -1);
+                        newVal = `${newString}*0${lastVal}`;
+                    }
+                }
+
+                // prevent starting with an operator
+                if (prevVal == "" && /[+\-*/÷]/.test(currentVal)) {
+                    return showError("Invalid input");
+                }
+
+                // prevent consecutive operators (if 4 + * replacing the + with * and so on)
+                if (/[+\-*/÷]/.test(prevVal[prevVal.length - 1]) && /[+\-/*÷]/.test(currentVal)) {
+                    let withoutLastChar = prevVal.slice(0, -1);
+                    newVal = withoutLastChar + currentVal;
+                }
+
+                // preventing double decimal (..) after a number
+                if (/[.]/.test(currentVal)) {
+                    if (prevVal[prevVal.length - 1] == ".") {
+                        let withoutLastChar = prevVal.slice(0, -1);
+                        newVal = withoutLastChar + currentVal;
+                    }
+                }
+
+                // prevent having muliple decimal in one number by removing the 2nd . 
+                if (/\d+\.\d{1,10}\.$/g.test(newVal)) {
+                    newVal = newVal.slice(0, -1);
+                }
+
+                // preventing more than 10 digits after decimal
+                if (/\d+(\.\d{11,})/.test(newVal)) {
+                    showError(`<b>Invalid input:</b><br>Can't enter more than 10 digits after decimal points.`);
+                    return;
+                }
+
+                // putting 0. before . in case there is not digit before . decimal
+                // also if (2) and user clicks on . btn then the string should convert to (2)*0.
+                if (/^\.|[+\-*/÷]\.$/.test(newVal)) {
+                    if (prevVal != "") {
+                        newVal = prevVal + "0.";
+                    } else {
+                        newVal = "0.";
+                    }
+                }
+
+                if (/\([\*|\/|÷]/.test(newVal)) {
+                    showError(`<b>Invalid operator:</b><br>Use only + or - operator after "("`);
+                    return;
+                }
+
+                input.value = newVal;
+            }
+
+        });
+
+        // keyboard accessible calculator
+        const keyMap = {
+            "1": "1",
+            "2": "2",
+            "3": "3",
+            "4": "4",
+            "5": "5",
+            "6": "6",
+            "7": "7",
+            "8": "8",
+            "9": "9",
+            "0": "0",
+            "+": "+",
+            "-": "-",
+            "*": "*",
+            "/": "÷",
+            ".": ".",
+            "Escape": "clear",
+            "Enter": "result"
+        }
+        window.addEventListener("keydown", function (e) {
+            const value = keyMap[e.key];
+            if (e.key === "Backspace") {
+                deleteBtn.click();
+                deleteBtn.classList.add("pressed");
+                setTimeout(() => {
+                    deleteBtn.classList.remove("pressed");
+                }, 200);
+            }
+            if (e.key === "(" || e.key === ")") {
+                ptheBtn.click();
+                ptheBtn.classList.add("pressed");
+                setTimeout(() => {
+                    ptheBtn.classList.remove("pressed");
+                }, 200);
+            }
+            if (value) {
+                const btn = document.querySelector(`button[data-value='${value}']`);
+                if (btn) {
+                    btn.click();
+                    btn.classList.add("pressed");
+                    setTimeout(() => {
+                        btn.classList.remove("pressed");
+                    }, 200);
+                };
+            }
+        });
+
+        // clearing (emptying) input
+        clearBtn.addEventListener("click", function (e) {
+            input.value = "";
+        });
+        
+        // deleting 1 character at a time form back
+        deleteBtn.addEventListener("click", function (e) {
+            input.value = input.value.slice(0, -1);
+        });
+
+        // call for evaluation (clicking eqaul button for calculation)
+        resultBtn.addEventListener("click", function () {
+            let eval = input.value.replace(/÷/g, "/");
+
+            // counting the digits after decimal so result can also have same number of digits after decimal
+            // const maxDecimalDigits = Math.max(
+            //     0,
+            //     ...Array.from(eval.matchAll(/\d+\.(\d+)/g), m => m[1].length)
+            // );
+            console.log(eval);
+
+            // handling error for division by zero
+            if (/\d+\/0/.test(eval)) {
+                showError(`<b>Invalid input:</b><br>Division by zero.`);
+                return;
+            }
+
+            // test whether a string contains only: num, operators & decimal
+            if (/^[0-9+\-*/.()]+$/.test(eval)) {
+                // converting string to number coz toFixed works on number only
+                let answer = Number(calculator(eval));
+                console.log(answer);
+
+                // 8* or 3+ string like these returned NaN so handling those errors
+                if (isNaN(answer) || answer == undefined) {
+                    showError("Invalid input");
+                    return;
+                }
+
+                // if result has decimal then fixed the num of digits after decimal we got in maxDecimalDigits variable
+                // if(/^\d*\.\d+$/.test(answer)){
+                //     input.value = answer.toFixed(maxDecimalDigits);
+                // }else{
+                //     input.value = answer.toFixed(0);
+                // }
+                input.value = answer;
+            } else {
+                // if we got anything other than num, operators & decimal then do these
+                if (eval == "") {
+                    return;
+                } else {
+                    showError(`<b>Invalid input:</b><br>Only numbers and + - * / operators are allowed.`);
+                    return;
+                }
+            }
+        });
+
+        // adjust font-size when input has more characters
+        function adjustFontSize() {
+            const maxFont = 32;
+            const medFont = 25;
+            const minFont = 22;
+
+            let length = input.value.length;
+            let newFontSize;
+            if (length >= 10 && length < 15) {
+                newFontSize = medFont;
+            } else if (length <= 10) {
+                newFontSize = maxFont;
+            } else if (length >= 15) {
+                newFontSize = minFont;
+            } else if (length <= 15 && length >= 10) {
+                newFontSize = medFont;
+            }
+            input.style.fontSize = `${newFontSize}px`;
+        }
+        
+        // error modal
+        function showError(msg) {
+            if (msg != "") {
+                let modal = document.querySelector(".error");
+                let msgHere = document.querySelector(".message");
+                let close = document.querySelector(".close");
+
+                modal.style.display = "flex";
+                msgHere.innerHTML = msg;
+
+                close.addEventListener("click", () => {
+                    modal.style.display = "none";
+                });
+            }
+
+        }
+
+        // evaluation here
+        function calculator(string) {
+
+            // error handling
+            if (!string || typeof string !== "string" || string == "") {
+                showError("Please provide a non-empty string.");
+                return;
+            }
+
+
+            // auto matching ( and ) to avoide getting wrong answers
+            const openCount = (string.match(/\(/g) || []).length;
+            const closeCount = (string.match(/\)/g) || []).length;
+            if (openCount > closeCount) {
+                string += ")".repeat(openCount - closeCount);
+            }
+
+            // converting sting into an array (decimal number accepted)
+
+            // old logic doesn't support negative numbers and parenthesis ex: - ['4', '+', '5', '*', '6', '/', '2']
+            // let infix = string.match(/\d+(\.\d+)?|\/|\*|\+|\-/g); 
+
+            // new logic that supports negative number and parenthesis 
+            let infix = tokenize(string); // ex: - ['(', '1', ')', '*', '(', '-2', ')']
+
+            let postFix = []; // will contain numbers and higher precedence operators
+            let opStack = []; // operator stack will have operators
+            const precedence = { '+': 1, '-': 1, '*': 2, '/': 2 }; // to compare operators
+
+            /*
+            ->  now the plan is to separate numbers(postFix) and operators(opStack) from infix array
+            ->  numbers will be pushed to postFix but if opStack has a operator of same precedence then that operator form opstack will be pop & pushed to postFix and the current operator will be pushed to opStack (ex:- if opStack has ["+", "*""] and current operator is "/" now both * & / have same precedence so * will be poped & pushed to postFix and / will we pushed to opStack).
+            ->  also parenthesis are important to make sure order of operation matters and they will only become useless in final postfix where we don't add them
+            */
+
+            // ['(', '-2', ')', '*', '(', '-4', ')']
+            // ['-2', '-4']
+
+            // ['(', '-2', ')', '*', '(', '-4']
+            // ['-2', '-4', '(']
+            // the above process is done by the loop below
+            for (let char of infix) {
+                // if number
+                if (/^-?\d+(\.\d+)?$/.test(char)) {
+                    postFix.push(char);
+                } else if (char === "(") {
+                    opStack.push(char);
+                } else if (char === ")") {
+                    while (opStack.length && opStack[opStack.length - 1] !== "(") {
+                        postFix.push(opStack.pop(char));
+                    }
+                    opStack.pop(); //remove the (
+                } else if (/\+|\-|\*|\//.test(char)) {
+                    // if operator
+                    while (
+                        opStack.length &&
+                        precedence[opStack[opStack.length - 1]] >= precedence[char]
+                    ) {
+                        postFix.push(opStack.pop());
+                    }
+                    opStack.push(char);
+                }
+            }
+            // post = [-2,-4]
+            // opst = [*,(]
+
+            /*
+             after above loop we end up with two arrays
+             postFix = ['4', '5', '6', '*', '2'] or ['1', '-2']
+             opStack = ['+', '/']                or ['(', ')', '*', '(', ')']
+            */
+
+            // merging opStack with postFix
+            //  ['+', '/'] ['4', '5', '6', '*', '2'] 
+            let opLength = opStack.length;
+            for (let i = 0; i < opLength; i++) {
+                postFix.push(opStack.pop());
+            }
+            // now we have only one array postFix = ['4', '5', '6', '*', '2', '/', '+'] now we are gonna evaluate the array
+            let result = [];
+            for (let i = 0; i < postFix.length; i++) {
+
+                /*
+                looking for an operator in postFix if it's a number then it goes to else and pushed into result array 
+                if it is an operator then we pop last two values from postFix array and evaluate it with the current found operator and this goes on and on till we are left with only one number and that would be our final result
+                */
+                // ['1', '-2', '*']
+                if (["*", "/", "+", "-"].includes(postFix[i])) {
+                    let last2Val = result.slice(-2); // 
+                    if (result.length == 1) {
+                        result[0] = Number(postFix[i] + result[0]);
+                    } else {
+                        result.splice(result.length - 2, 2);
+                        let a = Number(last2Val[0]);
+                        let b = Number(last2Val[1]);
+                        const operator = postFix[i];
+                        switch (operator) {
+                            case "*":
+                                result.push(a * b);
+                                break;
+                            case "/":
+                                result.push(a / b);
+                                break;
+                            case "+":
+                                result.push(a + b);
+                                break;
+                            case "-":
+                                result.push(a - b);
+                                break;
+                        }
+                    }
+
+                } else {
+                    result.push(postFix[i]);
+                }
+            }
+            // console.log("final", result);
+            return result[0];
+        }
+        
+        // building the infix array
+        function tokenize(exp) {
+            let token = [];
+            let num = "";
+
+            for (let i = 0; i < exp.length; i++) {
+                let char = exp[i];
+                // first build decimal number (if any)
+                if (/\d|\./.test(char)) {
+                    num += char;
+                } else {
+                    /*
+                    if we are in else that means current char is neither a number nor decimal it's an operator that mean previous number is built so it's time to push it to the token and empty the num
+                    we are also checking if num is not empty to make sure num does have a number before pushing and empting it
+                    */
+                    if (num !== "") {
+                        token.push(num);
+                        num = ""; // empting to build another number
+                    }
+                    if (char === "-" && exp[i - 1] === "(") {
+                        num = "-";
+                    } else {
+                        token.push(char);
+                    }
+                }
+            }
+            if (num !== "") token.push(num); // if num has anything left(like last number)then push it to token
+            return token;
+        }
+    
+        // history feature
+        const history = [];
+    </script>
 </body>
+
 </html>
