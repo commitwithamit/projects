@@ -1,0 +1,345 @@
+:root {
+    --green: #b1e9cf;
+    --cream: #f2ebdc;
+    --dark: #2e2f28;
+    --l-green: #e2ead8;
+    --result: #1bb26c;
+    --cut: #ff0000;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Kode Mono", monospace;
+}
+
+*:focus {
+    outline: none;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100vh;
+    background-image: url(../img/calculator-bg.png);
+    background-position: center left;
+    background-size: cover;
+}
+
+.box-style {
+    border: 3px solid var(--dark);
+    border-radius: 10px;
+    box-shadow: 4px 4px 0 0 var(--dark);
+    height: max-content;
+    width: min-content;
+    overflow: hidden;
+}
+
+.result-box {
+    background: var(--cream);
+    padding: 10px 15px;
+    height: 106px;
+}
+
+.result-box textarea {
+    width: 100%;
+    min-width: 212px;
+    height: 100%;
+    background: transparent;
+    outline: none;
+    border: none;
+    font-size: 2rem;
+    font-weight: 600;
+    padding-right: 6px;
+    text-align: right;
+    resize: none;
+    overflow-x: auto;
+    /* white-space: nowrap; */
+}
+
+::-webkit-scrollbar {
+    width: 4px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    /* background: var(--green); */
+    background: #ffd8ab;
+    ;
+    border-radius: 50px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: var(--green);
+}
+
+.btns-box {
+    padding: 15px;
+    display: grid;
+    grid-template-columns: max-content max-content max-content max-content;
+    grid-template-rows: max-content max-content max-content max-content max-content;
+    gap: 15px;
+    justify-content: center;
+    background: var(--green);
+    position: relative;
+}
+
+.btns-box img {
+    /* grid-area: 1/3/2/5; */
+    /* width: 100%; */
+    object-fit: contain;
+    background: var(--cream);
+}
+
+/* .btns-box input:nth-child(15) {
+    grid-area: 5/1/7/3;
+    width: 100%;
+} */
+
+.btn-sm {
+    width: 40px;
+    height: 40px;
+    font-size: 1rem;
+    box-shadow: 2px 2px 0 0 var(--dark);
+    background: var(--cream);
+    cursor: pointer;
+    transition: all .3s ease-in-out;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.delete>img {
+    width: 25px;
+}
+
+.font-h {
+    font-size: 1.35rem;
+}
+
+.error {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    transition: all .3s ease;
+    display: none;
+}
+
+.error::before {
+    content: "";
+    position: absolute;
+    background-color: black;
+    opacity: .7;
+    width: inherit;
+    height: inherit;
+}
+
+.error-box {
+    background-color: var(--cream);
+    padding: 2.5rem 2.3rem 2rem;
+    border-radius: 10px;
+    box-shadow: 4px 4px 0 0 var(--dark);
+    position: relative;
+    z-index: 2;
+    width: 300px;
+    max-width: 50%;
+    color: rgb(198, 0, 0);
+}
+
+.close {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.6rem;
+    width: 25px;
+    height: 25px;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: #000;
+}
+
+.close span {
+    transform: rotate(45deg);
+}
+
+.multiply {
+    font-family: sans-serif;
+    font-size: 15px;
+}
+
+.divide {
+    font-size: 22px;
+}
+
+.lg-txt {
+    font-size: 2rem;
+    color: var(--result);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.clear {
+    color: var(--cut);
+}
+
+@media (max-width:576px) {
+    .error-box {
+        max-width: 70%;
+        padding: 2.5rem 1rem 2rem;
+    }
+}
+
+.pressed {
+    background: #ffd8ab;
+}
+
+.history {
+    position: relative;
+    overflow: inherit;
+}
+
+.history>img {
+    width: 18px;
+}
+
+.history-box {
+    width: calc(100% - 25px);
+    height: calc(100% - 75px);
+    background: var(--cream);
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    border-radius: 5px;
+    padding: 10px;
+    text-align: right;
+    box-shadow: 4px 4px 0 0 var(--dark);
+    transform: translateX(-50%) scale(0);
+    transition: all .3s ease-in-out;
+    transform-origin: 62% 0%;
+}
+
+.history-box>div {
+    overflow-y: auto;
+    width: 100%;
+    height: 100%;
+    word-wrap: break-word;
+}
+
+.history-box::before {
+    content: "";
+    width: 20px;
+    height: 20px;
+    background: var(--cream);
+    position: absolute;
+    top: -9px;
+    z-index: 132;
+    transform: rotate(45deg);
+    right: 70px;
+}
+
+.history-box>div>div {
+    margin-bottom: 12px;
+}
+
+.history-box>div>div:last-child {
+    margin-bottom: 0;
+}
+
+.equ-ans {
+    color: var(--result);
+    font-weight: 900;
+}
+
+/* about porject */
+.about-project {
+    /* background: red; */
+    width: 100%;
+    height: 100vh;
+    position: absolute;
+    /* opacity: .5; */
+}
+
+.about-project>span {
+    display: block;
+    width: 40px;
+    height: 40px;
+    background: var(--cream);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 3px solid var(--dark);
+    box-shadow: 2px 2px 0 0 var(--dark);
+    border-radius: 8px;
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    cursor: pointer;
+    z-index: 1;
+}
+
+.about-project>.details {
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transform: scale(0);
+    transform-origin: 100% 100%;
+    transition: all .3s ease-out;
+}
+
+.about-project>.details>div {
+    border: 3px solid var(--dark);
+    box-shadow: 4px 4px 0 0 var(--dark);
+    width: 80%;
+    height:80%;
+    background: var(--cream);
+    padding: 1rem 2rem;
+    overflow: auto;
+    border-radius: 8px;
+}
+.about-project>.details>div>h2 {
+    display: flex;
+    align-items: center;
+    margin-bottom: .5rem;
+}
+.about-project>.details>div>h2 img {
+    width: 30px;
+}
+
+.about-project>.details>div ol {
+    /* list-style: none; */
+    padding-left: 4rem;
+    margin-bottom: 1.5rem;
+    line-height: 1.5;
+}
+.about-project>.details>div ul {
+    list-style-type: disc;
+    padding-left: 1rem;
+    line-height: 1.5;
+}
+ol > li::marker {
+    font-weight: bold;
+}
+
+@media (max-width:576px){
+    .about-project>.details>div>h2{
+        font-size: 1.4rem;
+    }
+}

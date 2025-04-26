@@ -9,273 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Kode+Mono:wght@400..700&display=swap" rel="stylesheet">
     <link rel="icon" type="image/x-icon" href="../img/calculator.png">
-    <style>
-        :root {
-            --green: #b1e9cf;
-            --cream: #f2ebdc;
-            --dark: #2e2f28;
-            --l-green: #e2ead8;
-            --result: #1bb26c;
-            --cut: #ff0000;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: "Kode Mono", monospace;
-        }
-
-        *:focus {
-            outline: none;
-        }
-
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-            height: 100vh;
-            background-image: url(../img/calculator-bg.png);
-            background-position: center left;
-            background-size: cover;
-        }
-
-        .box-style {
-            border: 3px solid var(--dark);
-            border-radius: 10px;
-            box-shadow: 4px 4px 0 0 var(--dark);
-            height: max-content;
-            width: min-content;
-            overflow: hidden;
-        }
-
-        .result-box {
-            background: var(--cream);
-            padding: 10px 15px;
-            height: 106px;
-        }
-
-        .result-box textarea {
-            width: 100%;
-            min-width: 212px;
-            height: 100%;
-            background: transparent;
-            outline: none;
-            border: none;
-            font-size: 2rem;
-            font-weight: 600;
-            padding-right: 6px;
-            text-align: right;
-            resize: none;
-            overflow-x: auto;
-            /* white-space: nowrap; */
-        }
-
-        ::-webkit-scrollbar {
-            width: 4px;
-        }
-
-        /* Track */
-        ::-webkit-scrollbar-track {
-            background: transparent;
-        }
-
-        /* Handle */
-        ::-webkit-scrollbar-thumb {
-            /* background: var(--green); */
-            background: #ffd8ab;
-            ;
-            border-radius: 50px;
-        }
-
-        /* Handle on hover */
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--green);
-        }
-
-        .btns-box {
-            padding: 15px;
-            display: grid;
-            grid-template-columns: max-content max-content max-content max-content;
-            grid-template-rows: max-content max-content max-content max-content max-content;
-            gap: 15px;
-            justify-content: center;
-            background: var(--green);
-            position: relative;
-        }
-
-        .btns-box img {
-            /* grid-area: 1/3/2/5; */
-            /* width: 100%; */
-            object-fit: contain;
-            background: var(--cream);
-        }
-
-        /* .btns-box input:nth-child(15) {
-            grid-area: 5/1/7/3;
-            width: 100%;
-        } */
-
-        .btn-sm {
-            width: 40px;
-            height: 40px;
-            font-size: 1rem;
-            box-shadow: 2px 2px 0 0 var(--dark);
-            background: var(--cream);
-            cursor: pointer;
-            transition: all .3s ease-in-out;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .delete>img {
-            width: 25px;
-        }
-
-        .font-h {
-            font-size: 1.35rem;
-        }
-
-        .error {
-            position: fixed;
-            width: 100%;
-            height: 100%;
-            justify-content: center;
-            align-items: center;
-            padding: 10px;
-            transition: all .3s ease;
-            display: none;
-        }
-
-        .error::before {
-            content: "";
-            position: absolute;
-            background-color: black;
-            opacity: .7;
-            width: inherit;
-            height: inherit;
-        }
-
-        .error-box {
-            background-color: var(--cream);
-            padding: 2.5rem 2.3rem 2rem;
-            border-radius: 10px;
-            box-shadow: 4px 4px 0 0 var(--dark);
-            position: relative;
-            z-index: 2;
-            width: 300px;
-            max-width: 50%;
-            color: rgb(198, 0, 0);
-        }
-
-        .close {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 1.6rem;
-            width: 25px;
-            height: 25px;
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            color: #000;
-        }
-
-        .close span {
-            transform: rotate(45deg);
-        }
-
-        .multiply {
-            font-family: sans-serif;
-            font-size: 15px;
-        }
-
-        .divide {
-            font-size: 22px;
-        }
-
-        .lg-txt {
-            font-size: 2rem;
-            color: var(--result);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .clear {
-            color: var(--cut);
-        }
-
-        @media (max-width:576px) {
-            .error-box {
-                max-width: 70%;
-                padding: 2.5rem 1rem 2rem;
-            }
-        }
-
-        .pressed {
-            background: #ffd8ab;
-        }
-
-        .history {
-            position: relative;
-            overflow: inherit;
-        }
-
-        .history>img {
-            width: 18px;
-        }
-
-        .history-box {
-            width: calc(100% - 25px);
-            height: calc(100% - 75px);
-            background: var(--cream);
-            position: absolute;
-            bottom: 10px;
-            left: 50%;
-            border-radius: 5px;
-            padding: 10px;
-            text-align: right;
-            box-shadow: 4px 4px 0 0 var(--dark);
-            transform: translateX(-50%) scale(0);
-            transition: all .3s ease-in-out;
-            transform-origin: 62% 0%;
-        }
-
-        .history-box>div {
-            overflow-y: auto;
-            width: 100%;
-            height: 100%;
-            word-wrap: break-word;
-        }
-
-        .history-box::before {
-            content: "";
-            width: 20px;
-            height: 20px;
-            background: var(--cream);
-            position: absolute;
-            top: -9px;
-            z-index: 132;
-            transform: rotate(45deg);
-            right: 70px;
-        }
-
-        .history-box>div>div {
-            margin-bottom: 12px;
-        }
-
-        .history-box>div>div:last-child {
-            margin-bottom: 0;
-        }
-
-        .equ-ans {
-            color: var(--result);
-            font-weight: 900;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
@@ -336,9 +70,84 @@
         </div>
     </div>
 
-    <script>
+    <div class="about-project">
+        <span id="info">i</span>
+        <div class="details">
+            <div>
+                <h2><img src="../img/gears.png" alt="calculation">Calculation Engine</h2>
+                <ol>
+                    <li><b>Shunting Yard Algorithm:</b> Ensures accurate order of operations using operator
+                        precedence and associativity.
+                    </li>
+                    <li><b>Regex-Powered Parsing:</b> Used heavily for expression splitting, validation, and clean
+                        number formatting.
+                    </li>
+                    <li><b>Decimal Control:</b>
+                        <ul>
+                            <li>Only one decimal point per number.</li>
+                            <li>A maximum of 10 digits allowed after the decimal.</li>
+                        </ul>
+                    </li>
+                    <li><b>15-digit Limit Enforcement:</b> Restricts each number to a total of 15 digits (before +
+                        after decimal).
+                    </li>
+                    <li><b>Division by Zero Handling:</b> Prevents invalid calculations and returns user-friendly
+                        error messages.
+                    </li>
+                    <li><b>Auto-Balanced Parentheses:</b> Automatically closes unmatched opening brackets for a valid
+                        expression.
+                    </li>
+                </ol>
 
-        //  Can't enter more than 10 digits after decimal points. when + - * / a decimal number > 15 digits 
+                <h2><img src="../img/contactform.png" alt="calculation"> Input Handling</h2>
+                <ol>
+                    <li><b>Smart Operator Replacement:</b> Prevents invalid operator sequences like 4+* by replacing
+                        the previous one (4*).
+                    </li>
+                    <li><b>Validation after "(":</b> Only allows + or - immediately after an opening parenthesis to
+                        ensure valid math expressions.
+                    </li>
+                    <li><b>Backspace & Delete Logic:</b>Works seamlessly to modify the input without breaking the
+                        formula.
+                    </li>
+                    <li><b>Prevent Input Focus Trigger:</b> Avoids unwanted evaluations via Enter key when a button
+                        is focused.
+                    </li>
+                    <li><b>Division by Zero Handling:</b> Prevents invalid calculations and returns user-friendly
+                        error messages.
+                    </li>
+                    <li>Supports both / and ÷ symbols for division during parsing and evaluation.
+                    </li>
+                    <li><b>Auto-Balanced Parentheses:</b> Automatically closes unmatched opening brackets for a valid
+                        expression.
+                    </li>
+                </ol>
+
+                <h2><img src="../img/form.png" alt="ui/ux"> UI / UX Enhancements</h2>
+                <ol>
+                    <li><b>Dynamic Font Resizing:</b> Font size automatically adjusts based on input length to fit in
+                        the display area.
+                    </li>
+                    <li><b>Horizontal Scroll Support:</b> Users can scroll within the input area to view full-length
+                        expressions.
+                    </li>
+                    <li><b>Clean Error Messaging:</b> Friendly and visually consistent error alerts for any invalid
+                        input.
+                    </li>
+                    <li><b>Calculation History Panel (Optional):</b> Displays previous expressions and results for
+                        quick reference.
+                    </li>
+                    <li><b>Mobile-Friendly Design:</b> Optimized interactions and input handling for smaller screen
+                        devices.
+                    </li>
+                </ol>
+
+                <h3 style="text-align: center;"><i>"Built with ❤️, patience, and an obsession for perfection!"</i></h3>
+            </div>
+        </div>
+    </div>
+
+    <script>
 
         const input = document.getElementById("display");
         const btnCon = document.querySelector(".btns-box");
@@ -353,7 +162,7 @@
         const history = [];
 
         // parenthesis functionality 
-        ptheBtn.addEventListener("click", function(e) {
+        ptheBtn.addEventListener("click", function (e) {
             this.blur();
             const value = input.value;
             const lastChar = value.slice(-1);
@@ -382,7 +191,7 @@
 
         // calculator's buttons click event
         btnCon.addEventListener("click", function (e) {
-            if(e.target != resultBtn){
+            if (e.target != resultBtn) {
                 e.target.blur();
             }
             let currentVal = e.target.dataset.value;
@@ -573,12 +382,12 @@
             //     ...Array.from(eval.matchAll(/\d+\.(\d+)/g), m => m[1].length)
             // );
 
-            
+
             // handling error for division by zero
             const divisionMatches = [...eval.matchAll(/\/([0-9.]+)/g)];
-            for(const match of divisionMatches){
+            for (const match of divisionMatches) {
                 const num = parseFloat(match[1]);
-                if(num === 0){
+                if (num === 0) {
                     showError("division by zero");
                     return;
                 }
@@ -603,7 +412,7 @@
                     showError("Invalid input");
                     return;
                 }
-                if(!isFinite(answer)){
+                if (!isFinite(answer)) {
                     showError("division by zero");
                     return;
                 }
@@ -840,15 +649,24 @@
             div.append(p1, p2);
             historyChild.append(div);
         }
-    
+
         // smart round numbers
-        function roundOff(num, precision = 10){
+        function roundOff(num, precision = 10) {
             let number = Number(num);
-            if(Number.isInteger(number)) return number; // already clean
+            if (Number.isInteger(number)) return number; // already clean
             const rounded = parseFloat(number.toFixed(precision));
             return Math.abs(rounded - Math.round(rounded)) < 1e-9 ? Math.round(rounded) : rounded;
         }
 
+        // info about the project
+        document.getElementById("info").addEventListener("click", function(e){
+            e.target.classList.toggle("active");
+            if(e.target.classList.contains("active")){
+                document.querySelector(".details").style.transform = "scale(1)";
+            }else{
+                document.querySelector(".details").style.transform = "scale(0)";
+            }
+        });
     </script>
 </body>
 
