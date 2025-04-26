@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Kode+Mono:wght@400..700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="../img/calculator.png">
     <style>
         :root {
             --green: #b1e9cf;
@@ -84,7 +85,7 @@
         ::-webkit-scrollbar-thumb {
             /* background: var(--green); */
             background: #ffd8ab;
-;
+            ;
             border-radius: 50px;
         }
 
@@ -218,23 +219,15 @@
             background: #ffd8ab;
         }
 
-        .history{
+        .history {
             position: relative;
-            overflow: inherit;  
+            overflow: inherit;
         }
+
         .history>img {
             width: 18px;
-            z-index: 2;
         }
-        .history::before{
-            content: "";
-            width: 20px;
-            height: 20px;
-            background: var(--cream);
-            position: absolute;
-            bottom: -25px;
-            transform: rotate(45deg);
-        }
+
         .history-box {
             width: calc(100% - 25px);
             height: calc(100% - 75px);
@@ -242,24 +235,46 @@
             position: absolute;
             bottom: 10px;
             left: 50%;
-            transform: translateX(-50%);
             border-radius: 5px;
             padding: 10px;
             text-align: right;
-            overflow: auto;
             box-shadow: 4px 4px 0 0 var(--dark);
+            transform: translateX(-50%) scale(0);
+            transition: all .3s ease-in-out;
+            transform-origin: 62% 0%;
         }
-        .history-box > div{
+
+        .history-box>div {
+            overflow-y: auto;
+            width: 100%;
+            height: 100%;
+            word-wrap: break-word;
+        }
+
+        .history-box::before {
+            content: "";
+            width: 20px;
+            height: 20px;
+            background: var(--cream);
+            position: absolute;
+            top: -9px;
+            z-index: 132;
+            transform: rotate(45deg);
+            right: 70px;
+        }
+
+        .history-box>div>div {
             margin-bottom: 12px;
         }
-        .history-box > div:last-child{
+
+        .history-box>div>div:last-child {
             margin-bottom: 0;
         }
-        .equ-ans{
+
+        .equ-ans {
             color: var(--result);
             font-weight: 900;
         }
-        
     </style>
 </head>
 
@@ -304,10 +319,12 @@
             <button data-value="result" class="box-style btn-sm lg-txt result">=</button>
 
             <div class="history-box">
-                <!-- <div>
-                    <p class="equ">234+789-849*(23+9)</p>
-                    <p class="equ-ans">=345</p>
-                </div> -->
+                <div>
+                    <!-- <div>
+                        <p class="equ">234+789-849*(23+9)</p>
+                        <p class="equ-ans">=345</p>
+                    </div> -->
+                </div>
             </div>
         </div>
     </div>
@@ -320,7 +337,8 @@
     </div>
 
     <script>
-        /*********** when result is longer then15 digits use e+ **************/ 
+
+        //  Can't enter more than 10 digits after decimal points. when + - * / a decimal number > 15 digits 
 
         const input = document.getElementById("display");
         const btnCon = document.querySelector(".btns-box");
@@ -328,10 +346,15 @@
         const resultBtn = document.querySelector(".result");
         const deleteBtn = document.querySelector(".delete");
         const ptheBtn = document.querySelector("#parenthesis");
+        const historyBtn = document.querySelector(".history");
+        const historyCon = document.querySelector(".history-box");
+        const historyChild = document.querySelector(".history-box>div");
         let openParenthesis = 0;
+        const history = [];
 
         // parenthesis functionality 
-        ptheBtn.addEventListener("click", () => {
+        ptheBtn.addEventListener("click", function(e) {
+            this.blur();
             const value = input.value;
             const lastChar = value.slice(-1);
 
@@ -359,6 +382,9 @@
 
         // calculator's buttons click event
         btnCon.addEventListener("click", function (e) {
+            if(e.target != resultBtn){
+                e.target.blur();
+            }
             let currentVal = e.target.dataset.value;
             adjustFontSize(); // inc/dec font-size if text is longer
             setTimeout(() => {
@@ -375,7 +401,7 @@
                 let prevVal = input.value;
                 let newVal = prevVal + currentVal;
 
-                const lastNumber = newVal.split(/[\+\-\*\/\(\)]/).pop(); // Get the most recent number
+                const lastNumber = newVal.split(/[\+\-\*\/÷\(\)]/).pop(); // Get the most recent number
                 const digitCount = lastNumber.replace(/[^0-9]/g, "");
 
                 if (digitCount.length > 15) {
@@ -399,6 +425,32 @@
                         newVal = `${newString}*0${lastVal}`;
                     }
                 }
+
+                // when user tries to do this 5÷02 we replace 02 with 2 like this 5÷2
+
+                // Extracts the number right after the division symbol.
+                // Trims leading zeros unless the number is like 0.2(i.e., a valid decimal).
+                // Checks if the value is exactly zero, not just starts with 0.
+
+                // if (/\d+(\.\d+)?÷0+/.test(newVal)) {
+                //     let afterDiv = newVal.split("÷");
+                //     let zeroPart = afterDiv[afterDiv.length-1];
+                //     if(/^0+[^\d\.]?/.test(zeroPart) && zeroPart.length > 1){
+
+                //         console.log("i am here");
+                //     }
+                // }
+                // if(/\d+(\.\d+)?÷0{1}/.test(newVal)){
+                //     let lastChr = newVal[newVal.length -1];
+                //     let newString = newVal.slice(0, -2);
+                //     console.log(newString, lastChr);
+                //     if(lastChr != "0"){
+                //         newVal = `${newString}${lastChr}`;
+                //     }
+                //     if(lastChr == "."){
+                //         newVal = `${newString}0${lastChr}`;
+                //     }
+                // }
 
                 // prevent starting with an operator
                 if (prevVal == "" && /[+\-*/÷]/.test(currentVal)) {
@@ -432,7 +484,7 @@
 
                 // putting 0. before . in case there is not digit before . decimal
                 // also if (2) and user clicks on . btn then the string should convert to (2)*0.
-                if (/^\.|[+\-*/÷]\.$/.test(newVal)) {
+                if (/^\.|[+\-*/÷()]\.$/.test(newVal)) {
                     if (prevVal != "") {
                         newVal = prevVal + "0.";
                     } else {
@@ -468,6 +520,7 @@
             "/": "÷",
             ".": ".",
             "Escape": "clear",
+            "Delete": "clear",
             "Enter": "result"
         }
         window.addEventListener("keydown", function (e) {
@@ -501,11 +554,13 @@
         // clearing (emptying) input
         clearBtn.addEventListener("click", function (e) {
             input.value = "";
+            this.blur();
         });
-        
+
         // deleting 1 character at a time form back
         deleteBtn.addEventListener("click", function (e) {
             input.value = input.value.slice(0, -1);
+            this.blur();
         });
 
         // call for evaluation (clicking eqaul button for calculation)
@@ -517,26 +572,43 @@
             //     0,
             //     ...Array.from(eval.matchAll(/\d+\.(\d+)/g), m => m[1].length)
             // );
-            console.log(eval);
 
+            
             // handling error for division by zero
-            if (/\d+\/0/.test(eval)) {
-                showError(`<b>Invalid input:</b><br>Division by zero.`);
-                return;
+            const divisionMatches = [...eval.matchAll(/\/([0-9.]+)/g)];
+            for(const match of divisionMatches){
+                const num = parseFloat(match[1]);
+                if(num === 0){
+                    showError("division by zero");
+                    return;
+                }
             }
+
+            // if (/\/0+(\.0*)?\b/.test(eval)) {
+            //     showError(`<b>Invalid input:</b><br>Division by zero.`);
+            //     return;
+            // }
+
+            // if (/\d+\/0/.test(eval)) {
+            //     showError(`<b>Invalid input:</b><br>Division by zero.`);
+            //     return;
+            // }
 
             // test whether a string contains only: num, operators & decimal
             if (/^[0-9+\-*/.()]+$/.test(eval)) {
                 // converting string to number coz toFixed works on number only
-                let answer = Number(calculator(eval));
-                console.log(answer);
-
+                let answer = roundOff(calculator(eval));
                 // 8* or 3+ string like these returned NaN so handling those errors
                 if (isNaN(answer) || answer == undefined) {
                     showError("Invalid input");
                     return;
                 }
-
+                if(!isFinite(answer)){
+                    showError("division by zero");
+                    return;
+                }
+                history.push({ exp: eval, result: answer });
+                updateHistory();
                 // if result has decimal then fixed the num of digits after decimal we got in maxDecimalDigits variable
                 // if(/^\d*\.\d+$/.test(answer)){
                 //     input.value = answer.toFixed(maxDecimalDigits);
@@ -574,7 +646,7 @@
             }
             input.style.fontSize = `${newFontSize}px`;
         }
-        
+
         // error modal
         function showError(msg) {
             if (msg != "") {
@@ -711,7 +783,7 @@
             // console.log("final", result);
             return result[0];
         }
-        
+
         // building the infix array
         function tokenize(exp) {
             let token = [];
@@ -741,9 +813,42 @@
             if (num !== "") token.push(num); // if num has anything left(like last number)then push it to token
             return token;
         }
-    
+
         // history feature
-        const history = [];
+        historyBtn.addEventListener("click", function () {
+            this.classList.toggle("acitve");
+            this.blur();
+            if (this.classList.contains("acitve")) {
+                historyCon.style.transform = "translateX(-50%) scale(1)";
+            } else {
+                historyCon.style.transform = "translateX(-50%) scale(0)";
+            }
+        });
+
+        // {"exp": "55+66","result": 121}
+        function updateHistory() {
+            let div = document.createElement("div");
+            let p1 = document.createElement("p");
+            let p2 = document.createElement("p");
+
+            p1.setAttribute("class", "equ");
+            p2.setAttribute("class", "equ-ans");
+
+            p1.textContent = history[history.length - 1].exp.replace("/", "÷");
+            p2.textContent = `=${history[history.length - 1].result}`;
+
+            div.append(p1, p2);
+            historyChild.append(div);
+        }
+    
+        // smart round numbers
+        function roundOff(num, precision = 10){
+            let number = Number(num);
+            if(Number.isInteger(number)) return number; // already clean
+            const rounded = parseFloat(number.toFixed(precision));
+            return Math.abs(rounded - Math.round(rounded)) < 1e-9 ? Math.round(rounded) : rounded;
+        }
+
     </script>
 </body>
 
