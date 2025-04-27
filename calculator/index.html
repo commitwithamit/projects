@@ -463,12 +463,22 @@
                 let modal = document.querySelector(".error");
                 let msgHere = document.querySelector(".message");
                 let close = document.querySelector(".close");
+                let body = document.querySelector("body");
+                let allInputs = document.querySelectorAll("input, button, select, textarea, a");
 
                 modal.style.display = "flex";
                 msgHere.innerHTML = msg;
 
+                // Disable interactions with the calculator and other background elements
+                body.style.pointerEvents = "none";  // Disable all interactions with background
+                modal.style.pointerEvents = "auto"; // Allow interaction with the modal
+                allInputs.forEach(input => input.setAttribute("disabled", "true"));
+
                 close.addEventListener("click", () => {
                     modal.style.display = "none";
+                    // Re-enable interactions with the calculator and other elements
+                    body.style.pointerEvents = "auto";
+                    allInputs.forEach(input => input.removeAttribute("disabled")); 
                 });
             }
 
@@ -629,7 +639,7 @@
             this.classList.toggle("acitve");
             this.blur();
             console.log(history);
-            if(history.length>0){
+            if (history.length > 0) {
                 document.querySelector(".empty-history").style.display = "none";
             }
             if (this.classList.contains("acitve")) {
