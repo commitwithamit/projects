@@ -92,10 +92,19 @@ h1 {
   justify-content: space-between;
   position: relative;
 }
-.list-con ul li span {
+.list-con ul li > span {
   display: grid;
   grid-template-columns: 1fr 10fr 0fr 0fr;
 }
+.list-con ul li .dynamic-val {
+  display: inline-block;
+  /* max-width: 200px; Max width to contain the text */
+  word-wrap: break-word; /* Break long words if necessary */
+  white-space: normal; /* Allow wrapping */
+  overflow-wrap: break-word; /* Ensure word breaks if needed */
+  word-break: break-word; /* Support breaking words for long inputs */
+}
+
 .list-con ul li span input {
   display: none;
 }
