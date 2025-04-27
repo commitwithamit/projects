@@ -346,4 +346,7 @@ ol > li::marker {
     div.details>div>h2{
         font-size: 1.4rem;
     }
+    div.details>div{
+        padding: 1rem 8px;
+    }
 }
