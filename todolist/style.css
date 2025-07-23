@@ -93,20 +93,16 @@ h1 {
   position: relative;
 }
 .list-con ul li > span {
-  display: grid;
-  grid-template-columns: 1fr 10fr 0fr 0fr;
+  display: flex;
+  width: 100%;
 }
-.list-con ul li .dynamic-val {
-  display: inline-block;
-  /* max-width: 200px; Max width to contain the text */
-  word-wrap: break-word; /* Break long words if necessary */
-  white-space: normal; /* Allow wrapping */
-  overflow-wrap: break-word; /* Ensure word breaks if needed */
-  word-break: break-word; /* Support breaking words for long inputs */
-}
-
-.list-con ul li span input {
+.list-con ul li > span input {
   display: none;
+}
+.list-con ul li > span span {
+  display: inline-block;
+  width: 80%;
+  word-wrap: break-word;
 }
 .list-con ul li i {
   display: inline-block;
@@ -185,5 +181,35 @@ h1 {
   100% {
     transform: translateX(80%);
     opacity: 0;
+  }
+}
+@media (max-width: 576px) {
+  .todo-container {
+    width: 80%;
+  }
+  .list-con ul li > span span {
+    width: 75%;
+    margin-right: 3px;
+  }
+  .list-con ul li i.bi-pencil-square {
+    margin-right: 3px;
+  }
+}
+@media (max-width: 370px) {
+  .input-con,
+  .edit-con {
+    flex-direction: column;
+  }
+  .edit-con {
+    gap: 5px;
+  }
+  .edit-con button:last-child {
+    margin: 0;
+  }
+  .input-con input {
+    padding: 20px 5px;
+  }
+  .edit-con input {
+    padding: 5px;
   }
 }/*# sourceMappingURL=style.css.map */

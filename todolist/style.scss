@@ -104,11 +104,20 @@ h1 {
             justify-content: space-between;
             position: relative;
 
-            span {
-                display: grid;
-                grid-template-columns: 1fr 10fr 0fr 0fr;
-                input{
+            &>span {
+                // display: grid;
+                // grid-template-columns: 1fr 10fr 0fr 0fr;
+                display: flex;
+                width: 100%;
+
+                input {
                     display: none;
+                }
+
+                span {
+                    display: inline-block;
+                    width: 80%;
+                    word-wrap: break-word;
                 }
             }
 
@@ -138,7 +147,7 @@ h1 {
                 cursor: pointer;
             }
 
-            i.bi-pencil-square{
+            i.bi-pencil-square {
                 margin-left: auto;
                 margin-right: 12px;
                 color: #f4955f;
@@ -152,7 +161,7 @@ h1 {
     }
 }
 
-.remove-item{
+.remove-item {
     animation: removeItem .3s ease-in-out both;
 }
 
@@ -200,4 +209,50 @@ h1 {
         transform: translateX(80%);
         opacity: 0;
     }
-} 
+}
+
+@media (max-width:576px) {
+    .todo-container {
+        width: 80%;
+    }
+
+    .list-con {
+        ul {
+            li {
+                &>span {
+                    span {
+                        width: 75%;
+                        margin-right: 3px;
+                    }
+                }
+                i.bi-pencil-square{
+                    margin-right: 3px;
+                }
+            }
+        }
+    }
+}
+
+@media (max-width:370px) {
+
+    .input-con,
+    .edit-con {
+        flex-direction: column;
+    }
+
+    .edit-con {
+        gap: 5px;
+    }
+
+    .edit-con button:last-child {
+        margin: 0;
+    }
+
+    .input-con input {
+        padding: 20px 5px;
+    }
+
+    .edit-con input {
+        padding: 5px;
+    }
+}
