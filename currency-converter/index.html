@@ -35,9 +35,11 @@
         .mb-2 {
             margin-bottom: 0.5rem;
         }
-        .main{
+
+        .main {
             position: relative;
         }
+
         .main::before {
             content: "";
             position: absolute;
@@ -62,6 +64,7 @@
             left: -35px;
             z-index: 0;
         }
+
         .container {
             background: #f3f3f3;
             padding: 2rem;
@@ -152,8 +155,36 @@
             body {
                 padding: 20px;
             }
+
+            .main {
+                width: 100%;
+                display: flex;
+                justify-content: center;
+            }
+
             .container {
-                width: 45vw;
+                width: 80%;
+            }
+        }
+
+        @media (max-width:380px) {
+            .container {
+                width: 100%;
+            }
+        }
+
+        @media (max-width:330px) {
+            .container {
+                width: 100%;
+            }
+
+            .dropdown {
+                flex-direction: column;
+            }
+
+            .dropdown svg {
+                margin-top: .5rem;
+                transform: rotate(90deg);
             }
         }
     </style>
