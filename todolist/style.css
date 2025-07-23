@@ -184,6 +184,10 @@ h1 {
   }
 }
 @media (max-width: 576px) {
+  body {
+    justify-content: flex-start;
+    padding-top: 1rem;
+  }
   .todo-container {
     width: 80%;
   }
